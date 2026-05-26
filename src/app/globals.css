@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+/* ====== Recur — Family-style design tokens ====== */
+:root {
+  /* Palette */
+  --bg:        #FAF7F2;
+  --surface-1: #F2EDE4;
+  --surface-2: #E8E1D5;
+  --surface-3: #DCD2C2;
+  --ink:       #1F1A14;
+  --ink-2:    rgba(31,26,20,0.92);
+  --text-2:    #6B6258;
+  --text-3:    #9A9085;
+  --hairline:  rgba(31,26,20,0.08);
+
+  /* Demo accents */
+  --rose:   #E6A89A;
+  --rose-d: #C97461;
+  --sage:   #A8B9A3;
+  --sage-d: #7A9572;
+  --butter: #F5D87A;
+  --butter-d:#D9B748;
+  --plum:   #7A5A6E;
+  --plum-d: #5A3F50;
+
+  /* Semantic */
+  --ok:    #7FA582;
+  --warn:  #E0A04B;
+  --err:   #C46A5E;
+
+  /* Shadows */
+  --sh-1: 0 1px 0 rgba(31,26,20,.04), 0 8px 24px rgba(31,26,20,.06);
+  --sh-2: 0 2px 0 rgba(31,26,20,.04), 0 16px 48px rgba(31,26,20,.10);
+  --sh-3: 0 4px 0 rgba(31,26,20,.04), 0 24px 56px rgba(31,26,20,.14);
+
+  /* Radii */
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Type — names mirror the design files */
+  --f-display: var(--font-fraunces), 'Tiempos Headline', ui-serif, Georgia, serif;
+  --f-ui: var(--font-geist-sans), 'Söhne', Inter, system-ui, sans-serif;
+  --f-mono: var(--font-jetbrains-mono), 'Söhne Mono', ui-monospace, Menlo, monospace;
+}
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-ui);
+}
+
+/* Paper grain on canvas */
+.paper-grain {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(rgba(31,26,20,.025) 1px, transparent 1px),
+    radial-gradient(rgba(31,26,20,.018) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+}
+
+/* Buttons — chunky pills */
+.btn {
+  display:inline-flex; align-items:center; gap:8px;
+  border:0; cursor:pointer; user-select:none;
+  font-family: var(--f-ui); font-weight:500; font-size:15px;
+  padding: 14px 22px; border-radius: var(--r-pill);
+  box-shadow: var(--sh-1);
+  transition: transform .18s cubic-bezier(.2,1.3,.4,1), box-shadow .18s, background .15s;
+  text-decoration: none;
+  color: inherit;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity:.5; cursor:not-allowed; transform:none; box-shadow: var(--sh-1); }
+.btn-lg { padding:18px 28px; font-size:16px; }
+.btn-sm { padding:10px 16px; font-size:14px; }
+
+.btn-plum   { background: var(--plum);   color:#F6EFE5; }
+.btn-plum:hover   { background: var(--plum-d); }
+.btn-sage   { background: var(--sage);   color: var(--ink); }
+.btn-sage:hover   { background: var(--sage-d); }
+.btn-rose   { background: var(--rose-d); color:#FAF7F2; }
+.btn-butter { background: var(--butter); color: var(--ink); }
+.btn-butter:hover { background: var(--butter-d); }
+.btn-ghost  { background: var(--surface-1); color: var(--ink); box-shadow: inset 0 0 0 1px var(--hairline); }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn-dark   { background: var(--ink); color: #FAF7F2; }
+
+.icon-btn {
+  width:40px; height:40px; border-radius:999px; border:0;
+  background: var(--surface-1); color: var(--ink); cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+  box-shadow: var(--sh-1);
+  transition: transform .15s, box-shadow .15s;
+}
+.icon-btn:hover { transform: translateY(-1px); box-shadow: var(--sh-2); }
+
+/* Chip / pill */
+.chip {
+  display:inline-flex; align-items:center; gap:6px;
+  background: var(--surface-1); color: var(--ink);
+  padding: 6px 12px; border-radius: 999px;
+  font-family: var(--f-ui); font-size: 13px; font-weight:500;
+}
+.chip-mono { font-family: var(--f-mono); font-size: 12.5px; letter-spacing: -0.01em; }
+.chip-dot::before { content:''; width:6px; height:6px; border-radius:999px; background: currentColor; display:inline-block; }
+
+/* Card */
+.card {
+  background: var(--surface-1); border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+}
+.card-xl { border-radius: var(--r-xl); }
+.card-dark { background: var(--ink); color: #F6EFE5; }
+
+/* Type helpers */
+.t-display { font-family: var(--f-display); font-weight: 400; letter-spacing: -0.02em; }
+.t-display-it { font-family: var(--f-display); font-weight: 400; font-style: italic; letter-spacing: -0.02em; }
+.t-ui { font-family: var(--f-ui); }
+.t-mono { font-family: var(--f-mono); }
+.t-num { font-variant-numeric: tabular-nums; }
+
+/* Input */
+.input {
+  width:100%; box-sizing:border-box;
+  background: var(--surface-1); border:0; outline: 0;
+  padding: 18px 20px; border-radius: var(--r-md);
+  font-family: var(--f-ui); font-size: 16px; color: var(--ink);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow .15s;
+}
+.input:focus { box-shadow: inset 0 0 0 2px var(--plum); background: var(--bg); }
+
+/* Wordmark */
+.wordmark {
+  font-family: var(--f-display); font-style: italic;
+  letter-spacing: -0.02em; font-weight: 400;
+}
+
+/* Scrollbars inside scrollers */
+.scroll-y { overflow-y:auto; }
+.scroll-y::-webkit-scrollbar { width: 6px; }
+.scroll-y::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 999px; }
+
+/* Subtle dashed placeholder boxes for illustrations */
+.placeholder {
+  display:flex; align-items:center; justify-content:center;
+  color: var(--text-3); font-family: var(--f-mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(31,26,20,0.025) 0 6px, transparent 6px 12px),
+    var(--surface-2);
+  border-radius: var(--r-md);
+}
+
+/* Strip pattern fills */
+.stripes-rose   { background: repeating-linear-gradient(45deg, var(--rose) 0 12px, #F4C8BC 12px 24px); }
+.stripes-sage   { background: repeating-linear-gradient(45deg, var(--sage) 0 12px, #BCC8B7 12px 24px); }
+.stripes-butter { background: repeating-linear-gradient(45deg, var(--butter) 0 12px, #F8E69F 12px 24px); }
+.stripes-plum   { background: repeating-linear-gradient(45deg, var(--plum) 0 12px, #8E6B81 12px 24px); }
+
+/* Keyframes referenced by inline animations */
+@keyframes recurPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.6); opacity: .45; }
+}
+@keyframes recurChipFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@keyframes recurShine {
+  0%   { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes wobble {
+  0%, 100% { transform: rotate(0); }
+  50%      { transform: rotate(2deg); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes recurLogoSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recur-logo-ring {
+    animation: none !important;
+  }
+}
