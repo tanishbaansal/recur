@@ -173,7 +173,9 @@ export default function Home() {
             Launch app →
           </a>
           <a
-            href="#demos"
+            href="https://www.youtube.com/watch?v=eTXVBZZcWpY"
+            target="_blank"
+            rel="noreferrer"
             className="btn btn-lg"
             style={{
               background: "var(--bg)",

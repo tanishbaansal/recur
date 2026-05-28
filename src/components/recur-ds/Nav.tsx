@@ -430,8 +430,25 @@ export function FooterStrip() {
           </span>
         ))}
       </div>
-      <span className="t-display-it" style={{ fontSize: 16, color: "#7a6f63" }}>
-        github · x · mirror · made warmly for the LI.FI Intents challenge
+      <span className="t-display-it" style={{ fontSize: 16, color: "#7a6f63", display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <a
+          href="https://github.com/tanishbaansal/recur"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px" }}
+        >
+          github
+        </a>
+        <span>·</span>
+        <a
+          href="https://x.com/snaked06/status/2059975135759900688"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: "3px" }}
+        >
+          x
+        </a>
+        <span>· made warmly for the LI.FI Intents challenge</span>
       </span>
     </footer>
   );
