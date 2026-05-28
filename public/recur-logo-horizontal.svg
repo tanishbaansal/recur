@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280">
+  <defs>
+    
+  </defs>
+  
+  <g transform="translate(20, 20)">
+    <rect width="240" height="240" rx="60" fill="#231B27"></rect>
+    <text x="120" y="170" text-anchor="middle" class="mark" font-size="160" fill="#F4ECDA" letter-spacing="-6">r</text>
+    <circle cx="166" cy="78" r="10" fill="#E8A89B"></circle>
+    <circle cx="166" cy="78" r="10" fill="none" stroke="#231B27" stroke-width="3"></circle>
+  </g>
+  
+  <text x="300" y="180" class="wordmark" font-size="180" fill="#1A1410" letter-spacing="-8">Recur</text>
+</svg>

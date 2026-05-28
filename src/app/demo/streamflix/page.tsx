@@ -253,7 +253,7 @@ const POSTERS: Array<{ title: string; tag: string; src: string; tint: string }> 
   {
     title: "The Bear",
     tag: "Series · FX",
-    src: "https://image.tmdb.org/t/p/w500/zPyHtXA8tyAcFHIZchRm6CKw1V2.jpg",
+    src: "https://resizing.flixster.com/ythiNysJjlwp5CeMPdjAyK3cWoo=/ems.cHJkLWVtcy1hc3NldHMvdHZzZXJpZXMvZTYzNmVmMjQtZjNmZi00YmYxLTllMGQtYWU3Mjc2MDEwNzMxLmpwZw==",
     tint: "#3a2018",
   },
 ];
@@ -362,5 +362,3 @@ function PosterCard({
     </div>
   );
 }
-
-

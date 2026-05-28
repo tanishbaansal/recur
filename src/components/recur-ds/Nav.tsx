@@ -9,6 +9,7 @@ export function RecurLogo({ size = 44 }: { size?: number }) {
   const [hovered, setHovered] = useState(false);
   const ringR = (size / 2) - 1.5;
   const dotR = 2.5;
+  const markSize = size - 6;
   return (
     <span
       onMouseEnter={() => setHovered(true)}
@@ -22,36 +23,30 @@ export function RecurLogo({ size = 44 }: { size?: number }) {
         flexShrink: 0,
       }}
     >
-      <span
-        style={{
-          width: size - 6,
-          height: size - 6,
-          borderRadius: 999,
-          background: "#231B27",
-          color: "#F4ECDA",
-          display: "grid",
-          placeItems: "center",
-          position: "relative",
-          zIndex: 1,
-        }}
+      <svg
+        width={markSize}
+        height={markSize}
+        viewBox="0 0 32 32"
+        aria-label="Recur"
+        style={{ position: "relative", zIndex: 1, borderRadius: markSize * 0.25 }}
       >
-        <svg
-          width={(size - 6) * 0.5}
-          height={(size - 6) * 0.5}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden
+        <rect width="32" height="32" rx="8" fill="#231B27" />
+        <text
+          x="16"
+          y="24"
+          textAnchor="middle"
+          fontFamily="var(--f-display, Georgia, serif)"
+          fontStyle="italic"
+          fontWeight={500}
+          fontSize="24"
+          fill="#F4ECDA"
+          letterSpacing="-1"
         >
-          <path d="M4 12a8 8 0 0 1 14-5.3L20 9" />
-          <path d="M20 4v5h-5" />
-          <path d="M20 12a8 8 0 0 1-14 5.3L4 15" />
-          <path d="M4 20v-5h5" />
-        </svg>
-      </span>
+          r
+        </text>
+        <circle cx="22.5" cy="10" r="2.4" fill="#E8A89B" />
+        <circle cx="22.5" cy="10" r="2.4" fill="none" stroke="#231B27" strokeWidth="0.6" />
+      </svg>
       <svg
         width={size}
         height={size}
@@ -150,7 +145,7 @@ export function TopBar() {
         >
           Launch App
         </Link>
-        <ConnectButton variant="primary" />
+        <ConnectButton variant="primary" className="btn-sm" />
       </div>
     </header>
   );

@@ -245,7 +245,7 @@ function ExplorerButton({
 }) {
   const fired = intents.find((i) => i.fired && i.onChainOrderId);
   const [loadingTx, setLoadingTx] = useState(false);
-  if (!fired) return <span className="t-mono" style={{ fontSize: 12, color: "var(--text-3)" }}>Pending…</span>;
+  if (!fired) return null;
   const intent = fired;
   async function handleClick() {
     setLoadingTx(true);
@@ -302,4 +302,3 @@ function fmt(sec: number): string {
   if (sec < 86400) return `${Math.floor(sec / 3600)}h ${Math.floor((sec % 3600) / 60)}m`;
   return `${Math.floor(sec / 86400)}d`;
 }
-
