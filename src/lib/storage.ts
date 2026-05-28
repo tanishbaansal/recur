@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { tmpdir } from "os";
 import { join } from "path";
 import type { SignedIntent, Subscription } from "./lifi/types";
 
@@ -13,9 +14,15 @@ type KvClient = {
 let kvImpl: KvClient | null = null;
 
 function makeFileKv(): KvClient {
-  const dir = join(process.cwd(), ".recur");
+  const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  const base = isServerless ? tmpdir() : process.cwd();
+  const dir = join(base, ".recur");
   const file = join(dir, "storage.json");
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  try {
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  } catch (e) {
+    console.warn("file kv: mkdir failed", e);
+  }
 
   function read(): { store: Record<string, unknown>; sets: Record<string, string[]> } {
     try {
@@ -68,6 +75,12 @@ function makeFileKv(): KvClient {
 
 async function getKv(): Promise<KvClient> {
   if (kvImpl) return kvImpl;
+  if (!process.env.KV_REST_API_URL && process.env.UPSTASH_REDIS_REST_URL) {
+    process.env.KV_REST_API_URL = process.env.UPSTASH_REDIS_REST_URL;
+  }
+  if (!process.env.KV_REST_API_TOKEN && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    process.env.KV_REST_API_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+  }
   const hasKv = !!(process.env.KV_URL || process.env.KV_REST_API_URL);
   if (hasKv) {
     try {
@@ -77,6 +90,11 @@ async function getKv(): Promise<KvClient> {
     } catch (e) {
       console.warn("Vercel KV import failed, falling back to file:", e);
     }
+  } else if (process.env.VERCEL) {
+    console.warn(
+      "[recur/storage] No KV env vars set on Vercel — using /tmp file store. " +
+        "Data will not persist between invocations. Attach Upstash Redis and set KV_REST_API_URL + KV_REST_API_TOKEN.",
+    );
   }
   kvImpl = makeFileKv();
   return kvImpl;

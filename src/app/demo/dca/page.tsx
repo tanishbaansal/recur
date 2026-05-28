@@ -29,7 +29,7 @@ export default function DcaPage() {
   const { ready, authenticated, login } = usePrivy();
   const { subscribe, busy, progress, address } = useRecur();
 
-  const [amount, setAmount] = useState("50");
+  const [amount, setAmount] = useState("10");
   const [cadence, setCadence] = useState<Cadence>("minute");
   const [periods, setPeriods] = useState(8);
   const [destChain, setDestChain] = useState<SupportedChainKey>("arbitrumSepolia");
@@ -574,7 +574,15 @@ export default function DcaPage() {
         </div>
       </div>
 
-      {running ? <RunningOverlay progress={progress} /> : null}
+      {running ? (
+        <RunningOverlay
+          progress={progress}
+          amount={amount}
+          periods={periods}
+          cadence={cadence}
+          destChain={destChain}
+        />
+      ) : null}
 
       {done ? (
         <div
@@ -634,16 +642,31 @@ export default function DcaPage() {
   );
 }
 
-function RunningOverlay({ progress }: { progress: ProgressState }) {
-  const steps = [
-    { label: "Approve USDC to The Compact", status: progress.approve },
-    { label: "Deposit into resource lock", status: progress.deposit },
-    {
-      label: `Sign ${progress.sign.signed}/${progress.sign.total} buys`,
-      status: progress.sign.status,
-    },
-    { label: "Save subscription", status: progress.save },
+function RunningOverlay({
+  progress,
+  amount,
+  periods,
+  cadence,
+  destChain,
+}: {
+  progress: ProgressState;
+  amount: string;
+  periods: number;
+  cadence: Cadence;
+  destChain: SupportedChainKey;
+}) {
+  const statuses = [
+    progress.approve,
+    progress.deposit,
+    progress.sign.status,
+    progress.save,
   ];
+  const doneCount = statuses.filter((s) => s === "done").length;
+  const pct = Math.round((doneCount / statuses.length) * 100);
+  const cadenceLabel = CADENCES.find((c) => c.key === cadence)?.label ?? cadence;
+  const chainLabel =
+    DEST_OPTIONS.find((d) => d.key === destChain)?.label ?? destChain;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -657,59 +680,226 @@ function RunningOverlay({ progress }: { progress: ProgressState }) {
         justifyContent: "center",
         background: "rgba(15,9,8,.82)",
         backdropFilter: "blur(12px)",
+        padding: 24,
       }}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
         className="card card-xl"
-        style={{ background: "var(--bg)", padding: 32, maxWidth: 460, width: "100%" }}
+        style={{ background: "var(--bg)", padding: 32, maxWidth: 520, width: "100%" }}
       >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div
+            className="t-mono"
+            style={{
+              fontSize: 11,
+              letterSpacing: ".14em",
+              textTransform: "uppercase",
+              color: "#8B6C14",
+            }}
+          >
+            Setting up your stack
+          </div>
+          <div
+            className="t-mono"
+            style={{ fontSize: 11, letterSpacing: ".08em", color: "var(--text-3)" }}
+          >
+            {pct}%
+          </div>
+        </div>
+
         <div
-          className="t-mono"
           style={{
-            fontSize: 11,
-            letterSpacing: ".14em",
-            textTransform: "uppercase",
-            color: "#8B6C14",
+            marginTop: 10,
+            height: 4,
+            borderRadius: 999,
+            background: "var(--surface-2)",
+            overflow: "hidden",
           }}
         >
-          Setting up your stack
+          <motion.div
+            initial={false}
+            animate={{ width: `${pct}%` }}
+            transition={{ type: "spring", stiffness: 140, damping: 24 }}
+            style={{ height: "100%", background: "var(--butter-d)", borderRadius: 999 }}
+          />
         </div>
-        <ul style={{ marginTop: 22, listStyle: "none", padding: 0, display: "grid", gap: 10 }}>
-          {steps.map((s) => (
-            <li key={s.label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span
-                style={{
-                  width: 22,
-                  height: 22,
-                  borderRadius: 999,
-                  background:
-                    s.status === "done"
-                      ? "var(--butter-d)"
-                      : s.status === "running"
-                      ? "var(--butter)"
-                      : "var(--surface-2)",
-                  color: "#1A1410",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: 11,
-                  fontWeight: 700,
-                }}
-              >
-                {s.status === "done" ? "✓" : s.status === "running" ? "…" : "·"}
-              </span>
-              <span
-                style={{
-                  fontSize: 14,
-                  color: s.status === "running" ? "var(--ink)" : "var(--text-2)",
-                  fontWeight: s.status === "running" ? 500 : 400,
-                }}
-              >
-                {s.label}
-              </span>
-            </li>
-          ))}
+
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 22 }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 999,
+              flexShrink: 0,
+              background: "linear-gradient(135deg, #F2D26A, #E5B83C)",
+              boxShadow: "0 4px 12px rgba(229,184,60,.35)",
+              display: "grid",
+              placeItems: "center",
+              color: "#3A2D08",
+              fontWeight: 700,
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 19V5" />
+              <path d="M6 11l6-6 6 6" />
+            </svg>
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div className="t-display" style={{ fontSize: 26, lineHeight: 1.1 }}>
+              Recur Stack
+            </div>
+            <div style={{ marginTop: 2, fontSize: 12, color: "var(--text-3)" }}>
+              DCA into ETH · {cadenceLabel.toLowerCase()}
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 14,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexWrap: "wrap",
+            fontSize: 13,
+            color: "var(--text-2)",
+          }}
+        >
+          <span className="t-mono" style={{ fontWeight: 600, color: "var(--ink)" }}>
+            {amount} USDC
+          </span>
+          <span style={{ color: "var(--text-3)" }}>×</span>
+          <span className="t-mono">{periods}</span>
+          <span style={{ color: "var(--text-3)" }}>→</span>
+          <span className="t-mono" style={{ color: "var(--ink)" }}>{chainLabel}</span>
+        </div>
+
+        <ul style={{ marginTop: 24, listStyle: "none", padding: 0, display: "grid", gap: 10 }}>
+          <DcaProgressRow label="Approve USDC to The Compact" status={progress.approve} />
+          <DcaProgressRow label="Deposit into resource lock" status={progress.deposit} />
+          <DcaProgressRow
+            label={`Sign ${progress.sign.signed}/${progress.sign.total} buys`}
+            status={progress.sign.status}
+          />
+          <DcaProgressRow label="Save subscription" status={progress.save} />
         </ul>
-      </div>
+      </motion.div>
     </motion.div>
+  );
+}
+
+function DcaProgressRow({
+  label,
+  status,
+}: {
+  label: string;
+  status: "idle" | "running" | "done" | "error";
+}) {
+  return (
+    <li
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        background: status === "running" ? "rgba(229,184,60,.12)" : "var(--surface-1)",
+        padding: 14,
+        borderRadius: 14,
+        transition: "background 200ms ease",
+      }}
+    >
+      <DcaProgressDot status={status} />
+      <span
+        style={{
+          fontSize: 14,
+          color:
+            status === "done"
+              ? "var(--text-2)"
+              : status === "running"
+              ? "var(--ink)"
+              : "var(--text-3)",
+          fontWeight: status === "running" ? 600 : 400,
+        }}
+      >
+        {label}
+      </span>
+    </li>
+  );
+}
+
+function DcaProgressDot({ status }: { status: "idle" | "running" | "done" | "error" }) {
+  if (status === "done") {
+    return (
+      <span
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 999,
+          background: "var(--butter-d)",
+          color: "#1A1410",
+          display: "grid",
+          placeItems: "center",
+          flexShrink: 0,
+        }}
+      >
+        <svg viewBox="0 0 16 16" width={12} height={12} fill="currentColor">
+          <path d="M6.7 11.5 3.2 8l1.4-1.4L6.7 8.7l4.7-4.7 1.4 1.4z" />
+        </svg>
+      </span>
+    );
+  }
+  if (status === "running") {
+    return (
+      <motion.span
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 999,
+          border: "2px solid var(--surface-2)",
+          borderTopColor: "var(--butter-d)",
+          flexShrink: 0,
+        }}
+      />
+    );
+  }
+  if (status === "error") {
+    return (
+      <span
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 999,
+          background: "var(--err, #C44A3F)",
+          color: "#F4ECDA",
+          display: "grid",
+          placeItems: "center",
+          fontSize: 13,
+          fontWeight: 700,
+          flexShrink: 0,
+        }}
+      >
+        !
+      </span>
+    );
+  }
+  return (
+    <span
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: 999,
+        background: "var(--surface-2)",
+        display: "grid",
+        placeItems: "center",
+        color: "var(--text-3)",
+        fontSize: 12,
+        flexShrink: 0,
+      }}
+    >
+      ·
+    </span>
   );
 }
